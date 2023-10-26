@@ -2,16 +2,16 @@ package animals;
 
 public class TestInput {
 
-    protected static boolean getYesOrNo(String question) {
-        System.out.println(question);
+    protected static boolean getYesOrNo() {
         while (true) {
-            String userInput = Main.scanner.nextLine().toLowerCase();
-            if (userInput.equals("yes")) return true;
-            else if (userInput.equals("no")) return false;
+            String userInput = Main.scanner.nextLine().toLowerCase().strip();
+            if (userInput.endsWith("!") || userInput.endsWith(".")) userInput = userInput.substring(0, userInput.length() - 1);
+            if (Main.YES_ANSWERS.contains(userInput)) return true;
+            else if (Main.NO_ANSWERS.contains(userInput)) return false;
             System.out.println("yes or no");
         }
     }
-    
+
     protected static String getAnimalFact() {
         while (true) {
             String userInput = Main.scanner.nextLine().toLowerCase().strip();
