@@ -53,10 +53,23 @@ public class Main {
         String fullAnimalName = getArticle(favAnimal) + " " + stripArticle(favAnimal);
         BinaryTree animalTree = new BinaryTree(new Node(fullAnimalName));
 
-        System.out.println("Wonderful! I've learned so much about animals!");
         printRules();
         scanner.nextLine();  // Reading the enter keystroke
-        playGuessingGame(animalTree, favAnimal);
+        while (true) {
+            buildAnimalTree(animalTree, animalTree.getRoot(), null);
+
+            // Ask for another round
+            System.out.println("Would you like to play again?");
+            boolean goForAnotherRound = TestInput.getYesOrNo();
+
+            if (goForAnotherRound) {
+                printRules();
+                scanner.nextLine();
+            } else {
+                break;
+            }
+
+        }
 
         // Say goodbye to user
         System.out.println();
@@ -87,38 +100,6 @@ public class Main {
             if (uneditedAnimalName.startsWith("the ")) uneditedAnimalName = uneditedAnimalName.substring(4);
             if (VOWELS.contains(uneditedAnimalName.charAt(0))) return "an";
             else return "a";
-        }
-    }
-
-    @Deprecated  // Used in Stage 1 of the project
-    private static String formulateQuestion(String userInput) {
-        String startingStatement = "Is it ";
-
-        if (userInput.startsWith("a ") || userInput.startsWith("an ")) {
-            startingStatement += userInput;
-        } else {
-            if (userInput.startsWith("the ")) userInput = userInput.substring(4);
-            if (VOWELS.contains(userInput.charAt(0))) startingStatement += "an " + userInput;
-            else startingStatement += "a " + userInput;
-        }
-
-        return startingStatement + "?";
-    }
-
-    @Deprecated  // Used in Stage 1 of the project
-    private static String getUserAnswer() {
-        while (true) {
-            String userAnswer = scanner.nextLine().toLowerCase().strip();
-            if (userAnswer.endsWith("!") || userAnswer.endsWith(".")) userAnswer = userAnswer.substring(0, userAnswer.length() - 1);
-
-            if (YES_ANSWERS.contains(userAnswer)) {
-                return "Yes";
-            } else if (NO_ANSWERS.contains(userAnswer)) {
-                return "No";
-            } else {
-                String clarificationStatement = CLARIFICATION_STATEMENTS[random.nextInt(CLARIFICATION_STATEMENTS.length)];
-                System.out.println(clarificationStatement);
-            }
         }
     }
 
@@ -186,21 +167,46 @@ public class Main {
     private static void printRules() {
         System.out.println("""
                 Let's play a game!
-                You think of an animla, and I guess it.
+                You think of an animal, and I guess it.
                 Press enter when you're ready.""");
     }
 
-    private static void playGuessingGame(BinaryTree animalTree, String oldAnimal) {
-        String fullOldAnimalName = getArticle(oldAnimal) + " " + stripArticle(oldAnimal);
+    private static void printFactsInstructions(String oldAnimal, String newAnimal) {
+        System.out.println("Specify a fact that distinguishes " + oldAnimal + " from " + newAnimal);
+        System.out.println("""
+                The sentence should satisfy one of the following templates:
+                - It can ...
+                - It has ...
+                - It is a/an ...
+                """);
+    }
+
+    private static void buildAnimalTree(BinaryTree animalTree, Node node, Node parentNode) {
+        if (node.isAnimalNode()) {
+            addNewAnimalAndFact(animalTree, node, parentNode);
+        } else {
+            String animalFact = node.getValue();
+            System.out.println(getQuestionFromFact(animalFact));
+            boolean answerIsYes = TestInput.getYesOrNo();
+
+            if (answerIsYes) {
+                buildAnimalTree(animalTree, node.getRight(), node);
+            } else {
+                buildAnimalTree(animalTree, node.getLeft(), node);
+            }
+        }
+    }
+
+    private static void addNewAnimalAndFact(BinaryTree animalTree, Node node, Node parentNode) {
+        String fullOldAnimalName = node.getValue();
         System.out.println("Is it " + fullOldAnimalName + "?");
 
         boolean correctForOldAnimal = TestInput.getYesOrNo();
-        String newAnimal = null;
 
         if (correctForOldAnimal) System.out.println("Yay! I got it right!\n");
         else {
             System.out.println("I give up. What animal do you have in mind?");
-            newAnimal = scanner.nextLine().toLowerCase().strip();
+            String newAnimal = scanner.nextLine().toLowerCase().strip();
             String fullNewAnimalName = getArticle(newAnimal) + " " + stripArticle(newAnimal);
 
             printFactsInstructions(fullOldAnimalName, fullNewAnimalName);
@@ -218,36 +224,18 @@ public class Main {
                 yesAnimal = fullOldAnimalName;
                 noAnimal = fullNewAnimalName;
             }
-            String question = getQuestionFromFact(animalFact);
 
-            Node questionNode = Node.createQuestionNode(yesAnimal, noAnimal, question);
-            animalTree.replaceAnimalWithQuestionNode(questionNode, new Node(fullOldAnimalName));
+            Node questionNode = Node.createQuestionNode(yesAnimal, noAnimal, animalFact);
+            if (parentNode == null) animalTree.setRoot(questionNode);
+            else {
+                if (parentNode.getLeft().equals(node)) parentNode.setLeft(questionNode);
+                else parentNode.setRight(questionNode);
+            }
 
             // Print the result to the console
-            summaryOfFactsLearned(animalFact, stripArticle(oldAnimal), stripArticle(newAnimal), correctForNewAnimal);
+            summaryOfFactsLearned(animalFact, stripArticle(fullOldAnimalName), stripArticle(newAnimal), correctForNewAnimal);
             System.out.println("Nice! I've learned so much about animals!\n");
         }
-
-        // Ask for another round
-        System.out.println("Would you like to play again?");
-        boolean goForAnotherRound = TestInput.getYesOrNo();
-
-        if (goForAnotherRound) {
-            printRules();
-            scanner.nextLine();
-            if (correctForOldAnimal) playGuessingGame(animalTree, oldAnimal);
-            else playGuessingGame(animalTree, newAnimal);
-        }
-    }
-
-    private static void printFactsInstructions(String oldAnimal, String newAnimal) {
-        System.out.println("Specify a fact that distinguishes " + oldAnimal + " from " + newAnimal);
-        System.out.println("""
-                The sentence should satisfy one of the following templates:
-                - It can ...
-                - It has ...
-                - It is a/an ...
-                """);
     }
 
 }
