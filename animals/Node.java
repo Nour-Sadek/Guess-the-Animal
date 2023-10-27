@@ -2,8 +2,8 @@ package animals;
 
 public class Node {
     private String value;
-    private Node left;
-    private Node right;
+    private Node left;  // represents the result of answering "no"
+    private Node right;  // represents the result of answering "yes"
 
     public Node(String value) {
         this.value = value;
@@ -46,20 +46,18 @@ public class Node {
         return this.getValue().equals(((Node) obj).getValue());
     }
 
-    public static Node createQuestionNode(String yesAnimal, String noAnimal, String question) {
+    public static Node createQuestionNode(String yesAnimal, String noAnimal, String animalFact) {
 
         // Create the question Node
-        Node questionNode = new Node(question);
-        questionNode.setLeft("No");
-        questionNode.setRight("Yes");
-
-        // Assign the animals to the left nodes of the correct "Yes" or "No" nodes (right nodes are null)
-        Node noNode = questionNode.getLeft();
-        Node yesNode = questionNode.getRight();
-        noNode.setLeft(noAnimal);
-        yesNode.setLeft(yesAnimal);
+        Node questionNode = new Node(animalFact);
+        questionNode.setLeft(new Node(noAnimal));
+        questionNode.setRight(new Node(yesAnimal));
 
         return questionNode;
+    }
+
+    public boolean isAnimalNode() {
+        return this.left == null && this.right == null;
     }
 
 }
