@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
+import java.io.*;
 
 public class Main {
 
@@ -47,11 +48,25 @@ public class Main {
 
         System.out.println(greeting + "\n");
 
-        System.out.println("I want to learn about animals.\n" +
-                "Which animal do you like most?");
-        String favAnimal = scanner.nextLine().toLowerCase().strip();
-        String fullAnimalName = getArticle(favAnimal) + " " + stripArticle(favAnimal);
-        BinaryTree animalTree = new BinaryTree(new Node(fullAnimalName));
+        String fileName = "animals.db";
+        BinaryTree animalTree = new BinaryTree();
+
+        // deserialize root node from animals.db
+        if (new File(fileName).isFile()) {  // Load root from previous run of the project
+            try {
+                Node root = (Node) SerializationUtils.deserialize(fileName);
+                animalTree.setRoot(root);
+            } catch (IOException | ClassNotFoundException e) {
+                String message = e.getMessage();
+                System.out.println(message);
+            }
+        } else {
+            System.out.println("I want to learn about animals.\n" +
+                    "Which animal do you like most?");
+            String favAnimal = scanner.nextLine().toLowerCase().strip();
+            String fullAnimalName = getArticle(favAnimal) + " " + stripArticle(favAnimal);
+            animalTree.setRoot(new Node(fullAnimalName));
+        }
 
         printRules();
         scanner.nextLine();  // Reading the enter keystroke
@@ -69,6 +84,14 @@ public class Main {
                 break;
             }
 
+        }
+
+        // Serialize root node to animals.db
+        try {
+            SerializationUtils.serialize(animalTree.getRoot(), fileName);
+        } catch (IOException e) {
+            String message = e.getMessage();
+            System.out.println(message);
         }
 
         // Say goodbye to user
