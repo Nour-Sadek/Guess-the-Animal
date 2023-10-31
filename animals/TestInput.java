@@ -1,6 +1,10 @@
 package animals;
 
+import java.util.List;
+
 public class TestInput {
+
+    private static final List<String> NUMBER_OPTIONS = List.of(new String[]{"0", "1", "2", "3", "4", "5"});
 
     protected static boolean getYesOrNo() {
         while (true) {
@@ -25,5 +29,15 @@ public class TestInput {
             }
         }
 
+    }
+
+    protected static String getNumberOption() {
+        while (true) {
+            String userInput = Main.scanner.nextLine().strip();
+            if (NUMBER_OPTIONS.contains(userInput)) return userInput;
+            else {
+                System.out.println("Please provide a valid number option from the menu");
+            }
+        }
     }
 }
