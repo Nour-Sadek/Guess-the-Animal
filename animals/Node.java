@@ -1,6 +1,8 @@
 package animals;
 
-public class Node {
+import java.io.Serializable;
+
+public class Node implements Serializable {
     private String value;
     private Node left;  // represents the result of answering "no"
     private Node right;  // represents the result of answering "yes"

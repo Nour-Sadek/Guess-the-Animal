@@ -8,6 +8,8 @@ public class BinaryTree {
         this.root = root;
     }
 
+    public BinaryTree() {}
+
     public Node getRoot() {
         return this.root;
     }
