@@ -48,7 +48,7 @@ public class BinaryTree {
     private static Node findNodeHelper(String value, Node root) {
         if (root == null) {
             return null;
-        } else if (Main.stripArticle(root.getValue()).equals(value)) {
+        } else if (Main.getNameFromFull(root.getValue()).equals(value)) {
             return root;
         } else {
             if (root.getLeft() != null) {
