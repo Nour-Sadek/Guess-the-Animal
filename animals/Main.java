@@ -314,6 +314,12 @@ public class Main {
             String newAnimal = scanner.nextLine().toLowerCase().strip();
             String fullNewAnimalName = getFullName(stripThe(newAnimal));
 
+            // Check if provided animal name already exists in the animalTree
+            if (animalTree.getAnimals().contains(getNameFromFull(fullNewAnimalName))) {
+                System.out.println("It seems like this animal already exists in the knowledge tree.\n");
+                return;
+            }
+
             printFactsInstructions(fullOldAnimalName, fullNewAnimalName);
             String animalFact = TestInput.getAnimalFact(fullOldAnimalName, fullNewAnimalName);
             System.out.println(MessageFormat.format(messageBundle.getString("game.isCorrect"), fullNewAnimalName));
