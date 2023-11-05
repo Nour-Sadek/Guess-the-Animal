@@ -322,6 +322,11 @@ public class Main {
 
             printFactsInstructions(fullOldAnimalName, fullNewAnimalName);
             String animalFact = TestInput.getAnimalFact(fullOldAnimalName, fullNewAnimalName);
+            // Check of the provided statement already exists in the animalTree
+            if (animalTree.getFacts().contains(animalFact)) {
+                System.out.println("It seems like this animal fact already exists in the knowledge tree.\n");
+                return;
+            }
             System.out.println(MessageFormat.format(messageBundle.getString("game.isCorrect"), fullNewAnimalName));
             boolean correctForNewAnimal = TestInput.getYesOrNo();
 
