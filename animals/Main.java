@@ -378,7 +378,16 @@ public class Main {
     }
 
     protected static String stripThe(String animal) {
-        if (animal.startsWith("the ")) return animal.substring(4);
+        if (animal.startsWith(messageBundle.getString("definitive"))) {
+            int startingIndex = 0;
+            for (; startingIndex < animal.length(); startingIndex++) {
+                if (animal.charAt(startingIndex) == ' ') {
+                    startingIndex++;
+                    break;
+                }
+            }
+            return animal.substring(startingIndex);
+        }
         else return animal;
     }
 
