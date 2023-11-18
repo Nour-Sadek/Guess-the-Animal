@@ -60,7 +60,7 @@ HyperSkill describes each of its four available difficulty levels:
 This repository contains
 
     animals package
-        - Contains the contacts.Main java class that contains the main method to run the project
+        - Contains the animals.Main java class that contains the main method to run the project
         - Contains the animals.TestInput java class that is used to check for proper user input
         - Contains the animals.SerializationUtils java class that allows for serialization of tree information
         - Contains the animals.Node java class that includes the implementation of the Node class of BinaryTree
